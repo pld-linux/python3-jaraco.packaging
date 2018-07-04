@@ -60,6 +60,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %if %{with python2}
 %py_install
+install build-2/lib/jaraco/__init__.py $RPM_BUILD_ROOT%{py_sitescriptdir}/%{module}
 
 # when files are installed in other way that standard 'setup.py
 # they need to be (re-)compiled
@@ -72,6 +73,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %if %{with python3}
 %py3_install
+install build-2/lib/jaraco/__init__.py $RPM_BUILD_ROOT%{py_sitescriptdir}/%{module}
 %endif
 
 %clean
