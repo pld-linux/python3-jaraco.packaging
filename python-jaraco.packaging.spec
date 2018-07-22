@@ -68,6 +68,17 @@ A few tools to supplement packaging Python releases.
 %description -n python3-%{pypi_name} -l pl.UTF-8
 Kilka narzędzi wspierających pakietowanie wydań modułów Pythona.
 
+%package apidocs
+Summary:	API documentation for Python jaraco.packaging module
+Summary(pl.UTF-8):	Dokumentacja API modułu Pythona jaraco.packaging
+Group:		Documentation
+
+%description apidocs
+API documentation for Python jaraco.packaging module.
+
+%description apidocs -l pl.UTF-8
+Dokumentacja API modułu Pythona jaraco.packaging.
+
 %prep
 %setup -q -n %{pypi_name}-%{version}
 
@@ -121,4 +132,10 @@ rm -rf $RPM_BUILD_ROOT
 %{py3_sitescriptdir}/jaraco/packaging
 %{py3_sitescriptdir}/%{egg_name}-%{version}-py*.egg-info
 %{py3_sitescriptdir}/%{egg_name}-%{version}-py*-nspkg.pth
+%endif
+
+%if %{with doc}
+%files apidocs
+%defattr(644,root,root,755)
+%doc docs/_build/html/{_static,*.html,*.js}
 %endif
