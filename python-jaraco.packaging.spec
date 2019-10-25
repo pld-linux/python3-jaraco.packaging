@@ -10,33 +10,35 @@
 Summary:	Tools to supplement packaging Python releases
 Summary(pl.UTF-8):	Narzędzia wspierające pakietowanie wydań modułów Pythona
 Name:		python-%{pypi_name}
-Version:	5.1.1
+Version:	6.2
 Release:	1
 License:	MIT
 Group:		Libraries/Python
 #Source0Download: https://pypi.org/simple/jaraco-packaging/
 Source0:	https://files.pythonhosted.org/packages/source/j/jaraco.packaging/%{pypi_name}-%{version}.tar.gz
-# Source0-md5:	490cb330f6654fcb46aa27c123f2ef84
+# Source0-md5:	ac36cfb217276af107bcbcb60bced1ec
 URL:		https://pypi.org/project/jaraco.packaging/
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.714
 %if %{with python2}
 BuildRequires:	python-modules >= 1:2.7
-BuildRequires:	python-setuptools
+BuildRequires:	python-setuptools >= 31.0.1
 BuildRequires:	python-setuptools_scm >= 1.15
 %if %{with tests}
+BuildRequires:	python-importlib_metadata
 BuildRequires:	python-pytest >= 3.5
-BuildRequires:	python-pytest-flake8
 BuildRequires:	python-six >= 1.4
 %endif
 %endif
 %if %{with python3}
-BuildRequires:	python3-modules
-BuildRequires:	python3-setuptools
+BuildRequires:	python3-modules >= 1:3.2
+BuildRequires:	python3-setuptools >= 31.0.1
 BuildRequires:	python3-setuptools_scm >= 1.15
 %if %{with tests}
+%if "%{py3_ver}" < "3.8"
+BuildRequires:	python3-importlib_metadata
+%endif
 BuildRequires:	python3-pytest >= 3.5
-BuildRequires:	python3-pytest-flake8
 BuildRequires:	python3-six >= 1.4
 %endif
 %endif
@@ -60,7 +62,7 @@ Summary:	Tools to supplement packaging Python releases
 Summary(pl.UTF-8):	Narzędzia wspierające pakietowanie wydań modułów Pythona
 Group:		Libraries/Python
 Requires:	python3-jaraco
-Requires:	python3-modules
+Requires:	python3-modules >= 1:3.2
 
 %description -n python3-%{pypi_name}
 A few tools to supplement packaging Python releases.
@@ -105,10 +107,17 @@ rm -rf $RPM_BUILD_ROOT
 %py_install
 
 %py_postclean
+
+# packaged in python-jaraco.spec
+%{__rm} $RPM_BUILD_ROOT%{py_sitescriptdir}/jaraco/__init__.py*
 %endif
 
 %if %{with python3}
 %py3_install
+
+# packaged in python-jaraco.spec
+%{__rm} $RPM_BUILD_ROOT%{py3_sitescriptdir}/jaraco/__init__.py
+%{__rm} $RPM_BUILD_ROOT%{py3_sitescriptdir}/jaraco/__pycache__/__init__.*
 %endif
 
 %clean
@@ -120,7 +129,6 @@ rm -rf $RPM_BUILD_ROOT
 %doc CHANGES.rst LICENSE README.rst
 %{py_sitescriptdir}/jaraco/packaging
 %{py_sitescriptdir}/%{egg_name}-%{version}-py*.egg-info
-%{py_sitescriptdir}/%{egg_name}-%{version}-py*-nspkg.pth
 %endif
 
 %if %{with python3}
@@ -131,7 +139,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/upload-package
 %{py3_sitescriptdir}/jaraco/packaging
 %{py3_sitescriptdir}/%{egg_name}-%{version}-py*.egg-info
-%{py3_sitescriptdir}/%{egg_name}-%{version}-py*-nspkg.pth
 %endif
 
 %if %{with doc}
