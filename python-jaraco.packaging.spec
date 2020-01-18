@@ -22,7 +22,7 @@ BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.714
 %if %{with python2}
 BuildRequires:	python-modules >= 1:2.7
-BuildRequires:	python-setuptools >= 31.0.1
+BuildRequires:	python-setuptools >= 1:31.0.1
 BuildRequires:	python-setuptools_scm >= 1.15
 %if %{with tests}
 BuildRequires:	python-importlib_metadata
@@ -32,7 +32,7 @@ BuildRequires:	python-six >= 1.4
 %endif
 %if %{with python3}
 BuildRequires:	python3-modules >= 1:3.2
-BuildRequires:	python3-setuptools >= 31.0.1
+BuildRequires:	python3-setuptools >= 1:31.0.1
 BuildRequires:	python3-setuptools_scm >= 1.15
 %if %{with tests}
 %if "%{py3_ver}" < "3.8"
