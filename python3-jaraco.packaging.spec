@@ -10,13 +10,13 @@
 Summary:	Tools to supplement packaging Python releases
 Summary(pl.UTF-8):	Narzędzia wspierające pakietowanie wydań modułów Pythona
 Name:		python3-%{pypi_name}
-Version:	8.2.0
+Version:	8.2.1
 Release:	1
 License:	MIT
 Group:		Libraries/Python
 #Source0Download: https://pypi.org/simple/jaraco-packaging/
 Source0:	https://files.pythonhosted.org/packages/source/j/jaraco.packaging/%{pypi_name}-%{version}.tar.gz
-# Source0-md5:	3a587b8210aaf4ce5433bc57f570883a
+# Source0-md5:	36ff1fa3c8b90562e7a615f71541521a
 URL:		https://pypi.org/project/jaraco.packaging/
 BuildRequires:	python3-modules >= 1:3.6
 BuildRequires:	python3-setuptools >= 1:31.0.1
@@ -28,9 +28,11 @@ BuildRequires:	python3-importlib_metadata
 %endif
 BuildRequires:	python3-jaraco.test
 BuildRequires:	python3-pytest >= 3.5
-BuildRequires:	python3-pytest-cov
 BuildRequires:	python3-pytest-black >= 0.3.7
+#BuildRequires:	python3-pytest-checkdocs >= 2.4
+BuildRequires:	python3-pytest-cov
 BuildRequires:	python3-pytest-flake8
+BuildRequires:	python3-pytest-mypy
 %endif
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.714
@@ -81,10 +83,6 @@ sphinx-build-3 -b html docs docs/_build/html
 rm -rf $RPM_BUILD_ROOT
 
 %py3_install
-
-# packaged in python3-jaraco.spec
-%{__rm} $RPM_BUILD_ROOT%{py3_sitescriptdir}/jaraco/__init__.py
-%{__rm} $RPM_BUILD_ROOT%{py3_sitescriptdir}/jaraco/__pycache__/__init__.*
 
 %clean
 rm -rf $RPM_BUILD_ROOT
