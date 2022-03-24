@@ -10,15 +10,15 @@
 Summary:	Tools to supplement packaging Python releases
 Summary(pl.UTF-8):	Narzędzia wspierające pakietowanie wydań modułów Pythona
 Name:		python3-%{pypi_name}
-Version:	8.2.1
+Version:	9.0.0
 Release:	1
 License:	MIT
 Group:		Libraries/Python
 #Source0Download: https://pypi.org/simple/jaraco-packaging/
 Source0:	https://files.pythonhosted.org/packages/source/j/jaraco.packaging/%{pypi_name}-%{version}.tar.gz
-# Source0-md5:	36ff1fa3c8b90562e7a615f71541521a
+# Source0-md5:	a97dd749afaff6844f0843e153a9e49d
 URL:		https://pypi.org/project/jaraco.packaging/
-BuildRequires:	python3-modules >= 1:3.6
+BuildRequires:	python3-modules >= 1:3.7
 BuildRequires:	python3-setuptools >= 1:31.0.1
 BuildRequires:	python3-setuptools_scm >= 3.4.1
 BuildRequires:	python3-toml
@@ -27,12 +27,14 @@ BuildRequires:	python3-toml
 BuildRequires:	python3-importlib_metadata
 %endif
 BuildRequires:	python3-jaraco.test
-BuildRequires:	python3-pytest >= 3.5
+BuildRequires:	python3-pep517
+BuildRequires:	python3-pytest >= 6
 BuildRequires:	python3-pytest-black >= 0.3.7
 #BuildRequires:	python3-pytest-checkdocs >= 2.4
 BuildRequires:	python3-pytest-cov
+#BuildRequires:	python3-pytest-enabler >= 1.0.1
 BuildRequires:	python3-pytest-flake8
-BuildRequires:	python3-pytest-mypy
+BuildRequires:	python3-pytest-mypy >= 0.9.1
 %endif
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.714
@@ -41,7 +43,7 @@ BuildRequires:	python3-rst.linker >= 1.9
 BuildRequires:	sphinx-pdg-3
 %endif
 Requires:	python3-jaraco
-Requires:	python3-modules >= 1:3.6
+Requires:	python3-modules >= 1:3.7
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -64,6 +66,12 @@ Dokumentacja API modułu Pythona jaraco.packaging.
 
 %prep
 %setup -q -n %{pypi_name}-%{version}
+
+# stub for setuptools
+cat >setup.py <<EOF
+from setuptools import setup
+setup()
+EOF
 
 %build
 %py3_build
@@ -90,7 +98,6 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc CHANGES.rst LICENSE README.rst
-%attr(755,root,root) %{_bindir}/dependency-tree
 %{py3_sitescriptdir}/jaraco/packaging
 %{py3_sitescriptdir}/%{egg_name}-%{version}-py*.egg-info
 
