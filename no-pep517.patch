@@ -1,0 +1,52 @@
+This reverts https://github.com/jaraco/jaraco.packaging/commit/278f825bf6c9beba82aaa77d765dd8c86e342ca7
+which is plain stpuid from disto packaging perspective as it is trying to fetch packages from pip
+at documentation build time.
+
+diff -ur jaraco.packaging-9.0.0/jaraco/packaging/sphinx.py jaraco.packaging-9.0.0-no-pep517/jaraco/packaging/sphinx.py
+--- jaraco.packaging-9.0.0/jaraco/packaging/sphinx.py	2022-02-11 03:55:53.000000000 +0100
++++ jaraco.packaging-9.0.0-no-pep517/jaraco/packaging/sphinx.py	2022-04-01 22:12:33.979598839 +0200
+@@ -1,6 +1,6 @@
+ import os
++import sys
+ import subprocess
+-import pep517.meta
+ 
+ try:
+     import importlib.metadata as imp_meta
+@@ -26,11 +26,19 @@
+     """
+     # for now, assume project root is one level up
+     root = os.path.join(app.confdir, '..')
+-    meta = pep517.meta.load(root).metadata
+-    app.config.project = meta['Name']
+-    app.config.version = app.config.release = meta['Version']
+-    app.config.package_url = meta['Home-page']
+-    app.config.author = app.config.copyright = meta['Author']
++    setup_script = os.path.join(root, 'setup.py')
++    fields = ['--name', '--version', '--url', '--author']
++    dist_info_cmd = [sys.executable, setup_script] + fields
++    output = subprocess.check_output(dist_info_cmd, cwd=root, universal_newlines=True)
++    outputs = output.strip().split('\n')
++    try:
++        project, version, url, author = outputs
++    except ValueError:
++        raise ValueError("Unexpected metadata output", output)
++    app.config.project = project
++    app.config.version = app.config.release = version
++    app.config.package_url = url
++    app.config.author = app.config.copyright = author
+ 
+ 
+ def configure_substitutions(app):
+diff -ur jaraco.packaging-9.0.0/setup.cfg jaraco.packaging-9.0.0-no-pep517/setup.cfg
+--- jaraco.packaging-9.0.0/setup.cfg	2022-02-11 03:56:17.039524600 +0100
++++ jaraco.packaging-9.0.0-no-pep517/setup.cfg	2022-04-01 22:12:33.979598839 +0200
+@@ -19,7 +19,6 @@
+ python_requires = >=3.7
+ install_requires = 
+ 	importlib_metadata; python_version < "3.8"
+-	pep517
+ 
+ [options.packages.find]
+ exclude = 
+Only in jaraco.packaging-9.0.0-no-pep517: setup.cfg.orig

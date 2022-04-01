@@ -11,11 +11,12 @@ Summary:	Tools to supplement packaging Python releases
 Summary(pl.UTF-8):	Narzędzia wspierające pakietowanie wydań modułów Pythona
 Name:		python3-%{pypi_name}
 Version:	9.0.0
-Release:	3
+Release:	4
 License:	MIT
 Group:		Libraries/Python
 #Source0Download: https://pypi.org/simple/jaraco-packaging/
 Source0:	https://files.pythonhosted.org/packages/source/j/jaraco.packaging/%{pypi_name}-%{version}.tar.gz
+Patch0:		no-pep517.patch
 # Source0-md5:	a97dd749afaff6844f0843e153a9e49d
 URL:		https://pypi.org/project/jaraco.packaging/
 BuildRequires:	python3-modules >= 1:3.7
@@ -27,7 +28,6 @@ BuildRequires:	python3-toml
 BuildRequires:	python3-importlib_metadata
 %endif
 BuildRequires:	python3-jaraco.test
-BuildRequires:	python3-pep517
 BuildRequires:	python3-pytest >= 6
 BuildRequires:	python3-pytest-black >= 0.3.7
 #BuildRequires:	python3-pytest-checkdocs >= 2.4
@@ -66,6 +66,7 @@ Dokumentacja API modułu Pythona jaraco.packaging.
 
 %prep
 %setup -q -n %{pypi_name}-%{version}
+%patch0 -p1
 
 # stub for setuptools
 cat >setup.py <<EOF
