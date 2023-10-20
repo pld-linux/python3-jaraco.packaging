@@ -6,11 +6,12 @@ Current (9.4.0) code has some workaround, but it requires building wheel, which 
 
 --- jaraco.packaging-9.4.0/jaraco/packaging/sphinx.py.orig	2023-10-17 20:57:31.545755310 +0200
 +++ jaraco.packaging-9.4.0/jaraco/packaging/sphinx.py	2023-10-18 19:33:19.935053257 +0200
-@@ -7,11 +7,9 @@ True
+@@ -7,11 +7,10 @@ True
  """
  
  import os
 -import warnings
++import subprocess
 +import sys
  from importlib import metadata
  
@@ -19,7 +20,7 @@ Current (9.4.0) code has some workaround, but it requires building wheel, which 
  import sphinx.util.docutils
  from docutils.parsers.rst import directives
  import docutils.statemachine
-@@ -82,39 +80,25 @@ class SidebarLinksDirective(sphinx.util.
+@@ -82,39 +81,25 @@ class SidebarLinksDirective(sphinx.util.
          return [only_node]
  
  
