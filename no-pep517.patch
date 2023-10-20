@@ -1,23 +1,57 @@
-This reverts https://github.com/jaraco/jaraco.packaging/commit/278f825bf6c9beba82aaa77d765dd8c86e342ca7
-which is plain stpuid from disto packaging perspective as it is trying to fetch packages from pip
+This reverts to the state before https://github.com/jaraco/jaraco.packaging/commit/278f825bf6c9beba82aaa77d765dd8c86e342ca7
+which was plain stupid from distro packaging perspective as it was trying to fetch packages from pip
 at documentation build time.
 
-diff -ur jaraco.packaging-9.0.0/jaraco/packaging/sphinx.py jaraco.packaging-9.0.0-no-pep517/jaraco/packaging/sphinx.py
---- jaraco.packaging-9.0.0/jaraco/packaging/sphinx.py	2022-02-11 03:55:53.000000000 +0100
-+++ jaraco.packaging-9.0.0-no-pep517/jaraco/packaging/sphinx.py	2022-04-01 22:12:33.979598839 +0200
-@@ -1,6 +1,6 @@
- import os
-+import sys
- import subprocess
--import pep517.meta
+Current (9.4.0) code has some workaround, but it requires building wheel, which we don't do either.
+
+--- jaraco.packaging-9.4.0/jaraco/packaging/sphinx.py.orig	2023-10-17 20:57:31.545755310 +0200
++++ jaraco.packaging-9.4.0/jaraco/packaging/sphinx.py	2023-10-18 19:33:19.935053257 +0200
+@@ -7,11 +7,9 @@ True
+ """
  
- try:
-     import importlib.metadata as imp_meta
-@@ -26,11 +26,19 @@
+ import os
+-import warnings
++import sys
+ from importlib import metadata
+ 
+-from build.util import project_wheel_metadata as load_metadata
+-from jaraco.context import suppress
+ import sphinx.util.docutils
+ from docutils.parsers.rst import directives
+ import docutils.statemachine
+@@ -82,39 +80,25 @@ class SidebarLinksDirective(sphinx.util.
+         return [only_node]
+ 
+ 
+-@suppress(KeyError)
+-def _load_metadata_from_wheel():
+-    """
+-    If indicated by an environment variable, expect the metadata
+-    to be present in a wheel and load it from there, avoiding
+-    the build process. Ref jaraco/jaraco.packaging#7.
+-
+-    >>> _load_metadata_from_wheel()
+-    >>> getfixture('static_wheel')
+-    >>> meta = _load_metadata_from_wheel()
+-    >>> meta['Name']
+-    'sampleproject'
+-    """
+-    wheel = os.environ['JARACO_PACKAGING_SPHINX_WHEEL']
+-    warnings.warn(
+-        "JARACO_PACKAGING_SPHINX_WHEEL is deprecated; fix pypa/build#556 instead",
+-        DeprecationWarning,
+-    )
+-    (dist,) = metadata.distributions(path=[wheel])
+-    return dist.metadata
+-
+-
+ def load_config_from_setup(app):
+     """
+     Replace values in app.config from package metadata
      """
      # for now, assume project root is one level up
      root = os.path.join(app.confdir, '..')
--    meta = pep517.meta.load(root).metadata
+-    meta = _load_metadata_from_wheel() or load_metadata(root)
 -    app.config.project = meta['Name']
 -    app.config.version = app.config.release = meta['Version']
 -    app.config.package_url = meta['Home-page']
@@ -38,15 +72,14 @@ diff -ur jaraco.packaging-9.0.0/jaraco/packaging/sphinx.py jaraco.packaging-9.0.
  
  
  def configure_substitutions(app):
-diff -ur jaraco.packaging-9.0.0/setup.cfg jaraco.packaging-9.0.0-no-pep517/setup.cfg
---- jaraco.packaging-9.0.0/setup.cfg	2022-02-11 03:56:17.039524600 +0100
-+++ jaraco.packaging-9.0.0-no-pep517/setup.cfg	2022-04-01 22:12:33.979598839 +0200
-@@ -19,7 +19,6 @@
- python_requires = >=3.7
+--- jaraco.packaging-9.4.0/setup.cfg.orig	2023-10-17 20:57:31.549088625 +0200
++++ jaraco.packaging-9.4.0/setup.cfg	2023-10-18 19:36:51.620573125 +0200
+@@ -18,8 +18,6 @@ packages = find_namespace:
+ include_package_data = true
+ python_requires = >=3.8
  install_requires = 
- 	importlib_metadata; python_version < "3.8"
--	pep517
+-	build[virtualenv]
+-	jaraco.context
+ 	sphinx
+ 	domdf-python-tools
  
- [options.packages.find]
- exclude = 
-Only in jaraco.packaging-9.0.0-no-pep517: setup.cfg.orig
