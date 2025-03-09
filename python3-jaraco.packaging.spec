@@ -71,7 +71,7 @@ Dokumentacja API modułu Pythona jaraco.packaging.
 
 %prep
 %setup -q -n %{pypi_name}-%{version}
-%patch0 -p1
+%patch -P 0 -p1
 
 # stub for setuptools
 cat >setup.py <<EOF
@@ -84,7 +84,7 @@ EOF
 
 %if %{with tests}
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 \
-%{__python3} -m pytest 
+%{__python3} -m pytest
 %endif
 
 %if %{with doc}
