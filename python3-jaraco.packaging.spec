@@ -11,7 +11,7 @@ Summary:	Tools to supplement packaging Python releases
 Summary(pl.UTF-8):	Narzędzia wspierające pakietowanie wydań modułów Pythona
 Name:		python3-%{pypi_name}
 Version:	9.4.0
-Release:	2
+Release:	3
 License:	MIT
 Group:		Libraries/Python
 #Source0Download: https://pypi.org/simple/jaraco-packaging/
