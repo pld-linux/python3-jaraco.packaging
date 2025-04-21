@@ -3,20 +3,20 @@
 %bcond_without	doc	# Sphinx documentation
 %bcond_with	tests	# unit tests (no tests in sources)
 
-%define		egg_name	jaraco.packaging
 %define		pypi_name	jaraco.packaging
 Summary:	Tools to supplement packaging Python releases
 Summary(pl.UTF-8):	Narzędzia wspierające pakietowanie wydań modułów Pythona
 Name:		python3-%{pypi_name}
-Version:	9.4.0
-Release:	3
+Version:	10.2.3
+Release:	1
 License:	MIT
 Group:		Libraries/Python
 #Source0Download: https://pypi.org/simple/jaraco-packaging/
-Source0:	https://files.pythonhosted.org/packages/source/j/jaraco.packaging/%{pypi_name}-%{version}.tar.gz
-# Source0-md5:	7b03f1b20477bdee86e0cc6e7b70cdca
-Patch0:		no-pep517.patch
+Source0:	https://files.pythonhosted.org/packages/source/j/jaraco_packaging/jaraco_packaging-%{version}.tar.gz
+# Source0-md5:	7d4621f007cc2d0e646c26194c6e5f12
 URL:		https://pypi.org/project/jaraco.packaging/
+BuildRequires:	python3-build
+BuildRequires:	python3-installer
 BuildRequires:	python3-modules >= 1:3.8
 BuildRequires:	python3-setuptools >= 1:31.0.1
 BuildRequires:	python3-setuptools_scm >= 3.4.1
@@ -38,9 +38,10 @@ BuildRequires:	python3-pytest-cov
 #BuildRequires:	python3-types-docutils
 %endif
 BuildRequires:	rpm-pythonprov
-BuildRequires:	rpmbuild(macros) >= 1.714
+BuildRequires:	rpmbuild(macros) >= 2.044
 %if %{with doc}
 BuildRequires:	python3-furo
+BuildRequires:	python3-jaraco.context
 BuildRequires:	python3-rst.linker >= 1.9
 #BuildRequires:	python3-sphinx-lint
 BuildRequires:	sphinx-pdg-3 >= 3.5
@@ -68,17 +69,10 @@ API documentation for Python jaraco.packaging module.
 Dokumentacja API modułu Pythona jaraco.packaging.
 
 %prep
-%setup -q -n %{pypi_name}-%{version}
-%patch -P 0 -p1
-
-# stub for setuptools
-cat >setup.py <<EOF
-from setuptools import setup
-setup()
-EOF
+%setup -q -n jaraco_packaging-%{version}
 
 %build
-%py3_build
+%py3_build_pyproject
 
 %if %{with tests}
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 \
@@ -94,7 +88,7 @@ sphinx-build-3 -b html docs docs/_build/html
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%py3_install
+%py3_install_pyproject
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -103,7 +97,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc LICENSE NEWS.rst README.rst
 %{py3_sitescriptdir}/jaraco/packaging
-%{py3_sitescriptdir}/%{egg_name}-%{version}-py*.egg-info
+%{py3_sitescriptdir}/jaraco_packaging-%{version}.dist-info
 
 %if %{with doc}
 %files apidocs
