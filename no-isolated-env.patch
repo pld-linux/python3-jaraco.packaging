@@ -1,0 +1,11 @@
+--- jaraco_packaging-10.2.3/jaraco/packaging/metadata.py.orig	2024-08-20 05:01:28.000000000 +0200
++++ jaraco_packaging-10.2.3/jaraco/packaging/metadata.py	2025-04-21 17:50:45.118512926 +0200
+@@ -6,7 +6,7 @@
+ 
+ def load(
+     source_dir: util.StrPath,
+-    isolated: bool = os.environ.get('BUILD_ENVIRONMENT', 'isolated') == 'isolated',
++    isolated: bool = os.environ.get('BUILD_ENVIRONMENT', 'current') == 'isolated',
+     **kwargs,
+ ):
+     """

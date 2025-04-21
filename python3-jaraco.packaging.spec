@@ -14,6 +14,7 @@ Group:		Libraries/Python
 #Source0Download: https://pypi.org/simple/jaraco-packaging/
 Source0:	https://files.pythonhosted.org/packages/source/j/jaraco_packaging/jaraco_packaging-%{version}.tar.gz
 # Source0-md5:	7d4621f007cc2d0e646c26194c6e5f12
+Patch0:		no-isolated-env.patch
 URL:		https://pypi.org/project/jaraco.packaging/
 BuildRequires:	python3-build
 BuildRequires:	python3-installer
@@ -70,6 +71,7 @@ Dokumentacja API modułu Pythona jaraco.packaging.
 
 %prep
 %setup -q -n jaraco_packaging-%{version}
+%patch -P0 -p1
 
 %build
 %py3_build_pyproject
