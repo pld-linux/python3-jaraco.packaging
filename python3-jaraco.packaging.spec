@@ -99,7 +99,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc LICENSE NEWS.rst README.rst
 %{py3_sitescriptdir}/jaraco/packaging
-%{py3_sitescriptdir}/jaraco_packaging-%{version}.dist-info
+%{py3_sitescriptdir}/jaraco.packaging-%{version}.dist-info
 
 %if %{with doc}
 %files apidocs
