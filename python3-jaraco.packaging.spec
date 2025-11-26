@@ -3,10 +3,9 @@
 %bcond_without	doc	# Sphinx documentation
 %bcond_with	tests	# unit tests (no tests in sources)
 
-%define		pypi_name	jaraco.packaging
 Summary:	Tools to supplement packaging Python releases
 Summary(pl.UTF-8):	Narzędzia wspierające pakietowanie wydań modułów Pythona
-Name:		python3-%{pypi_name}
+Name:		python3-jaraco.packaging
 Version:	10.2.3
 Release:	1
 License:	MIT
@@ -19,23 +18,22 @@ URL:		https://pypi.org/project/jaraco.packaging/
 BuildRequires:	python3-build
 BuildRequires:	python3-installer
 BuildRequires:	python3-modules >= 1:3.8
-BuildRequires:	python3-setuptools >= 1:31.0.1
+BuildRequires:	python3-setuptools >= 1:61.2
 BuildRequires:	python3-setuptools_scm >= 3.4.1
 BuildRequires:	python3-toml
 %if %{with tests}
+BuildRequires:	python3-Sphinx
 BuildRequires:	python3-domdf-python-tools
-%if "%{py3_ver}" < "3.8"
-BuildRequires:	python3-importlib_metadata
-%endif
+BuildRequires:	python3-jaraco.context
 BuildRequires:	python3-jaraco.test
 BuildRequires:	python3-pytest >= 6
-BuildRequires:	python3-pytest-black >= 0.3.7
 # lint only?
+#BuildRequires:	python3-pytest-black >= 0.3.7
 #BuildRequires:	python3-pytest-checkdocs >= 2.4
-BuildRequires:	python3-pytest-cov
+#BuildRequires:	python3-pytest-cov
 #BuildRequires:	python3-pytest-enabler >= 2.2
 #BuildRequires:	python3-pytest-mypy >= 0.9.1
-#BuildRequires:	python3-ruff
+#BuildRequires:	python3-ruff >= 0.2.1
 #BuildRequires:	python3-types-docutils
 %endif
 BuildRequires:	rpm-pythonprov
@@ -99,7 +97,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc LICENSE NEWS.rst README.rst
 %{py3_sitescriptdir}/jaraco/packaging
-%{py3_sitescriptdir}/jaraco.packaging-%{version}.dist-info
+%{py3_sitescriptdir}/jaraco_packaging-%{version}.dist-info
 
 %if %{with doc}
 %files apidocs
