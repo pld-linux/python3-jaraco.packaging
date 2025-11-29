@@ -1,7 +1,7 @@
 #
 # Conditional build:
 %bcond_without	doc	# Sphinx documentation
-%bcond_with	tests	# unit tests (no tests in sources)
+%bcond_without	tests	# unit tests (doctests)
 
 Summary:	Tools to supplement packaging Python releases
 Summary(pl.UTF-8):	Narzędzia wspierające pakietowanie wydań modułów Pythona
@@ -76,11 +76,10 @@ Dokumentacja API modułu Pythona jaraco.packaging.
 
 %if %{with tests}
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 \
-%{__python3} -m pytest
+%{__python3} -m pytest jaraco/packaging/metadata.py
 %endif
 
 %if %{with doc}
-# no Makefile
 PYTHONPATH=$(pwd) \
 sphinx-build-3 -b html docs docs/_build/html
 %endif
